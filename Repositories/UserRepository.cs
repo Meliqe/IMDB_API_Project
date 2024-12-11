@@ -61,4 +61,37 @@ public class UserRepository
         }
         return false;
     }
+
+    //Kullanici bilgilerini Getiren fonksiyon
+    public User KullaniciBilgiGetir(string email)
+    {
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("kullanici_bilgi_getir", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Email", email);
+                
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read()) 
+                    {
+                        var user = new User
+                        {
+                            Password = reader.GetString(reader.GetOrdinal("sifre")) // Hashlenmiş parola
+                        };
+                        Console.WriteLine($"Veritabanından alınan parola hash: {user.Password}");
+                        return user;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    
+    
 }

@@ -67,3 +67,5 @@ C:\Users\55ere\Desktop\Imdb\obj\Debug\net9.0\refint\Imdb.dll
 C:\Users\55ere\Desktop\Imdb\obj\Debug\net9.0\Imdb.pdb
 C:\Users\55ere\Desktop\Imdb\obj\Debug\net9.0\Imdb.genruntimeconfig.cache
 C:\Users\55ere\Desktop\Imdb\obj\Debug\net9.0\ref\Imdb.dll
+C:\Users\55ere\Desktop\Imdb\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Users\55ere\Desktop\Imdb\obj\Debug\net9.0\Imdb.sourcelink.json

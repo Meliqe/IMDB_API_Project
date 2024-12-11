@@ -1,4 +1,5 @@
 ﻿
+using Imdb.Helpers;
 using Imdb.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,9 @@ public class UserController:ControllerBase
         {
             user.Id = Guid.NewGuid();        
             user.CreateTime = DateTime.Now;
-            bool result = _userRepository.KullaniciKayit(user);
+            user.Password = HashHelper.GetHash(user.Password);
+
+            var result = _userRepository.KullaniciKayit(user);
             if (result)
                 return Ok("Kayıt başarılı."); 
             return BadRequest("Kayıt başarısız.");
@@ -38,16 +41,26 @@ public class UserController:ControllerBase
     {
         try
         {
-            bool result = _userRepository.KullaniciGiris(user.Email, user.Password);
+            var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
+            if (storedUser == null)
+            {
+                return Unauthorized("E-posta bulunamadı.");
+            }
+            Console.WriteLine($"Kullanıcıdan gelen parola: {user.Password}");
+            Console.WriteLine($"Veritabanından alınan hash: {storedUser.Password}");
 
-            if (result)
-                return Ok("Giriş başarılı."); 
-
-            return Unauthorized("E-posta veya şifre hatalı."); 
+            var isPasswordValid = HashHelper.VerifyHash(user.Password, storedUser.Password);
+            Console.WriteLine($"Parola doğrulama sonucu: {isPasswordValid}");
+            if (!isPasswordValid)
+            {
+                return Unauthorized("E-posta veya şifre hatalı.");
+            }
+            return Ok("Giriş başarılı.");
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            return StatusCode(500, $"Hata: {ex.Message}");
+            Console.WriteLine(e);
+            throw;
         }
     }
 }
