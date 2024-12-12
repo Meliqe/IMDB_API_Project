@@ -44,10 +44,10 @@ public class UserController:ControllerBase
             Console.WriteLine(isMatch);*/
             
             var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
-            var isPasswordValid = HashHelper.VerifyHash(user.Password, storedUser.Password);
+            var isPasswordValid = HashHelper.VerifyHash(user.Password.Trim(), storedUser.Password.Trim());
             Console.WriteLine($"Giriş Şifresi: {user.Password}");
-            Console.WriteLine($"Veritabanındaki Hash: {storedUser.Password}");
-            Console.WriteLine(isPasswordValid);
+            Console.WriteLine($"Veritabanından Gelen Hash: {storedUser.Password}");
+            Console.WriteLine($"Hash Uzunluğu: {storedUser.Password.Length}");
             if (isPasswordValid)
             {
                 return Ok("Giriş başarılı.");

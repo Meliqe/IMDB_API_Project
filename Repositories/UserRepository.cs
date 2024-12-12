@@ -25,6 +25,8 @@ public class UserRepository
             using (var cmd = new SqlCommand("kisi_ekle", conn))
             {
                 user.Password=HashHelper.GetHash(user.Password);
+                Console.WriteLine($"Kaydedilecek Şifre Hash: {user.Password}");
+                Console.WriteLine($"Hash Uzunluğu: {user.Password.Length}");
                 cmd.CommandType = CommandType.StoredProcedure; 
                 cmd.Parameters.AddWithValue("@Isim", user.Name); //add fonksiyonu sqlparameterdan 
                 cmd.Parameters.AddWithValue("@Soyisim", user.Surname);
