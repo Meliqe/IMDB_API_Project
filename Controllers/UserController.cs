@@ -23,8 +23,6 @@ public class UserController:ControllerBase
         {
             user.Id = Guid.NewGuid();        
             user.CreateTime = DateTime.Now;
-            user.Password = HashHelper.GetHash(user.Password);
-
             var result = _userRepository.KullaniciKayit(user);
             if (result)
                 return Ok("Kayıt başarılı."); 
@@ -41,21 +39,21 @@ public class UserController:ControllerBase
     {
         try
         {
+            /*var hashedPassword = BCrypt.Net.BCrypt.HashPassword("deneme123456");
+            var isMatch = BCrypt.Net.BCrypt.Verify("deneme123456", hashedPassword);
+            Console.WriteLine(isMatch);*/
+            
             var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
-            if (storedUser == null)
-            {
-                return Unauthorized("E-posta bulunamadı.");
-            }
-            Console.WriteLine($"Kullanıcıdan gelen parola: {user.Password}");
-            Console.WriteLine($"Veritabanından alınan hash: {storedUser.Password}");
-
             var isPasswordValid = HashHelper.VerifyHash(user.Password, storedUser.Password);
-            Console.WriteLine($"Parola doğrulama sonucu: {isPasswordValid}");
-            if (!isPasswordValid)
+            Console.WriteLine($"Giriş Şifresi: {user.Password}");
+            Console.WriteLine($"Veritabanındaki Hash: {storedUser.Password}");
+            Console.WriteLine(isPasswordValid);
+            if (isPasswordValid)
             {
-                return Unauthorized("E-posta veya şifre hatalı.");
+                return Ok("Giriş başarılı.");
             }
-            return Ok("Giriş başarılı.");
+            
+            return Unauthorized("E-posta veya şifre hatalı.");
         }
         catch (Exception e)
         {

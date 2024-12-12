@@ -1,5 +1,6 @@
 ﻿
 using System.Data;
+using Imdb.Helpers;
 using Microsoft.Data.SqlClient;
 
 namespace Imdb.Repositories;
@@ -23,8 +24,9 @@ public class UserRepository
             conn.Open();
             using (var cmd = new SqlCommand("kisi_ekle", conn))
             {
-                cmd.CommandType = CommandType.StoredProcedure; //bunu kullan normal query göre farkı nedir login ve register sp si olsun
-                cmd.Parameters.AddWithValue("@Isim", user.Name);
+                user.Password=HashHelper.GetHash(user.Password);
+                cmd.CommandType = CommandType.StoredProcedure; 
+                cmd.Parameters.AddWithValue("@Isim", user.Name); //add fonksiyonu sqlparameterdan 
                 cmd.Parameters.AddWithValue("@Soyisim", user.Surname);
                 cmd.Parameters.AddWithValue("@Email", user.Email);
                 cmd.Parameters.AddWithValue("@Sifre", user.Password);
@@ -36,7 +38,7 @@ public class UserRepository
     }
     
     //Kullanıcı Giriş
-    public bool KullaniciGiris(string email, string password)
+    /*public bool KullaniciGiris(string email, string password)
     {
         using (var conn = new SqlConnection(_connectionString))
         {
@@ -60,7 +62,7 @@ public class UserRepository
             }
         }
         return false;
-    }
+    }*/
 
     //Kullanici bilgilerini Getiren fonksiyon
     public User KullaniciBilgiGetir(string email)
@@ -81,7 +83,7 @@ public class UserRepository
                         {
                             Password = reader.GetString(reader.GetOrdinal("sifre")) // Hashlenmiş parola
                         };
-                        Console.WriteLine($"Veritabanından alınan parola hash: {user.Password}");
+                        //Console.WriteLine($"Veritabanından alınan parola hash: {user.Password}");
                         return user;
                     }
                 }
