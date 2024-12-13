@@ -4,16 +4,19 @@ using Imdb.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imdb.Controller;
-
+// jwt geldikten sonra bir şey eklemem gerekbilir. atribute gibi
+//"AllowedHosts": "*",  bu kısma da bak 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController:ControllerBase
 {
     private readonly UserRepository _userRepository;
+    private IConfiguration _configuraiton;
 
     public UserController(IConfiguration configuration)
     {
-        _userRepository = new UserRepository(configuration.GetConnectionString("DefaultConnection"));
+        _configuraiton = configuration;
+        _userRepository = new UserRepository(_configuraiton.GetConnectionString("DefaultConnection"));
     }
 
     [HttpPost("kayit")]
@@ -39,20 +42,13 @@ public class UserController:ControllerBase
     {
         try
         {
-            /*var hashedPassword = BCrypt.Net.BCrypt.HashPassword("deneme123456");
-            var isMatch = BCrypt.Net.BCrypt.Verify("deneme123456", hashedPassword);
-            Console.WriteLine(isMatch);*/
-            
             var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
             var isPasswordValid = HashHelper.VerifyHash(user.Password.Trim(), storedUser.Password.Trim());
-            Console.WriteLine($"Giriş Şifresi: {user.Password}");
-            Console.WriteLine($"Veritabanından Gelen Hash: {storedUser.Password}");
-            Console.WriteLine($"Hash Uzunluğu: {storedUser.Password.Length}");
+            var email = user.Email;
             if (isPasswordValid)
             {
-                return Ok("Giriş başarılı.");
+                return Ok(new { Token = JwtHelper.GenerateJwtToken(email, _configuraiton) });
             }
-            
             return Unauthorized("E-posta veya şifre hatalı.");
         }
         catch (Exception e)
