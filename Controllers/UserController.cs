@@ -1,6 +1,8 @@
 ﻿
+using System.Linq.Expressions;
 using Imdb.Helpers;
 using Imdb.Repositories;
+using Imdb.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imdb.Controller;
@@ -10,13 +12,11 @@ namespace Imdb.Controller;
 [Route("api/[controller]")]
 public class UserController:ControllerBase
 {
-    private readonly UserRepository _userRepository;
-    private IConfiguration _configuraiton;
+    private readonly UserService _userService;
 
-    public UserController(IConfiguration configuration)
+    public UserController(UserService userService)
     {
-        _configuraiton = configuration;
-        _userRepository = new UserRepository(_configuraiton.GetConnectionString("DefaultConnection"));
+        _userService = userService;
     }
 
     [HttpPost("kayit")]
@@ -24,12 +24,10 @@ public class UserController:ControllerBase
     {
         try
         {
-            user.Id = Guid.NewGuid();        
-            user.CreateTime = DateTime.Now;
-            var result = _userRepository.KullaniciKayit(user);
-            if (result)
-                return Ok("Kayıt başarılı."); 
-            return BadRequest("Kayıt başarısız.");
+            var result = _userService.Register(user);
+            if(result)
+                return Ok();
+            return BadRequest();
         }
         catch (Exception ex)
         {
@@ -42,19 +40,16 @@ public class UserController:ControllerBase
     {
         try
         {
-            var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
-            var isPasswordValid = HashHelper.VerifyHash(user.Password.Trim(), storedUser.Password.Trim());
-            var email = user.Email;
-            if (isPasswordValid)
-            {
-                return Ok(new { Token = JwtHelper.GenerateJwtToken(email, _configuraiton) });
-            }
-            return Unauthorized("E-posta veya şifre hatalı.");
+            var token = _userService.Login(user);
+            return Ok(new {Token = token});
         }
-        catch (Exception e)
+        catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine(e);
-            throw;
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Hata: {ex.Message}");
         }
     }
 }

@@ -8,10 +8,9 @@ namespace Imdb.Repositories;
 public class UserRepository
 {
     private readonly string _connectionString;
-
-    public UserRepository(string connectionString)
+    public UserRepository(IConfiguration configuration)
     {
-        _connectionString = connectionString;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
     //Fonksiyonlar
@@ -38,33 +37,6 @@ public class UserRepository
             }
         }
     }
-    
-    //Kullanıcı Giriş
-    /*public bool KullaniciGiris(string email, string password)
-    {
-        using (var conn = new SqlConnection(_connectionString))
-        {
-            conn.Open();
-            using (var cmd = new SqlCommand("kisi_giris", conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@Sifre", password);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        var mesaj = reader["Mesaj"].ToString();
-                        var durum = Convert.ToInt32(reader["Durum"]);
-
-                        Console.WriteLine($"Sonuç: {mesaj}, Durum: {durum}");
-                        return durum == 1;
-                    }
-                }
-            }
-        }
-        return false;
-    }*/
 
     //Kullanici bilgilerini Getiren fonksiyon
     public User KullaniciBilgiGetir(string email)

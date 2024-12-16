@@ -1,5 +1,7 @@
 using System.Text;
 using DotNetEnv;
+using Imdb.Repositories;
+using Imdb.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -8,8 +10,10 @@ Env.Load();
 var secretKey = Env.GetString("JWT_SECRET_KEY");
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-//Program.cs kısmında, gelen JWT token'ların doğrulanması için gerekli ayarları yapıyoruz.
+//Program.cs kısmında, gelen JWT token'ların doğrulanması için gerekli ayarları yapıyoruz.  
 var jwtSettings=builder.Configuration.GetSection("JwtSetting");
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,22 +37,8 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+{ app.MapOpenApi();}
 
-/*try
-{ 
-    using (var connection = new SqlConnection(connectionString))
-    {
-        connection.Open();
-        Console.WriteLine("Bağlantı kuruldu");
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine("Bağlantı kurulamadı:"+ ex.Message);
-}*/
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
