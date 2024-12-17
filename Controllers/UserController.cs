@@ -41,6 +41,10 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); 
+            }
             var token = _userService.Login(user);
             return Ok(new {Token = token});
         }
