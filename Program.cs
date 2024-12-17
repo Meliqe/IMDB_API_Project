@@ -7,27 +7,24 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS Policy tanımı
 builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        options.AddPolicy("AllowFrontend", policy =>
-        {
-            policy.WithOrigins("http://localhost:4200")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
-    }
-);
-
-
-
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 Env.Load();
 var secretKey = Env.GetString("JWT_SECRET_KEY");
-builder.Services.AddOpenApi();
+
+// JWT Ayarları
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddControllers();
-//Program.cs kısmında, gelen JWT token'ların doğrulanması için gerekli ayarları yapıyoruz.  
-var jwtSettings=builder.Configuration.GetSection("JwtSetting");
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserRepository>();
 
@@ -43,22 +40,29 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"], // appsettings.json'dan alınıyor
-        ValidAudience = jwtSettings["Audience"], // appsettings.json'dan alınıyor
+        ValidIssuer = jwtSettings["Issuer"], 
+        ValidAudience = jwtSettings["Audience"], 
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 });
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-{ app.MapOpenApi();}
+{
+    app.MapOpenApi();
+}
+
+app.UseRouting(); // Routing middleware
+
+// CORS middleware (Routing'den hemen sonra olmalı)
+app.UseCors("AllowFrontend");
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
+
 app.MapControllers();
+
 app.Run();
-
-
