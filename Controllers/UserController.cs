@@ -4,14 +4,15 @@ using Imdb.Helpers;
 using Imdb.Repositories;
 using Imdb.Services;
 using Microsoft.AspNetCore.Mvc;
-
+//
 namespace Imdb.Controller;
 // jwt geldikten sonra bir şey eklemem gerekbilir. atribute gibi
 //"AllowedHosts": "*",  bu kısma da bak 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController:ControllerBase
+public class UserController:ControllerBase //Basecontroller diye kendi sınıfım oalcak tğm controllerımalrımı ordan üretcem
 {
+    //basemodel ekle
     private readonly UserService _userService;
 
     public UserController(UserService userService)
@@ -45,11 +46,19 @@ public class UserController:ControllerBase
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(ex.Message);
+            return Unauthorized(new
+            {
+                success = false,
+                message = ex.Message
+            });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Hata: {ex.Message}");
+            return StatusCode(500, new
+            {
+                success = false,
+                message = $"Sunucu hatası: {ex.Message}"
+            });
         }
     }
 }

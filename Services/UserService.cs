@@ -30,14 +30,14 @@ public class UserService
         var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
         if (storedUser == null)
         {
-            return "Kullanıcı bulunamadı.";
+            throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
         }
         
-        var isPasswordValid= HashHelper.VerifyHash(user.Password, storedUser.Password);
-        if (isPasswordValid)
+        var isPasswordValid = HashHelper.VerifyHash(user.Password, storedUser.Password);
+        if (!isPasswordValid)
         {
-            return JwtHelper.GenerateJwtToken(user.Email, _configuration);
+            throw new UnauthorizedAccessException("E-posta veya şifre hatalı.");
         }
-        throw new UnauthorizedAccessException("E-posta veya şifre hatalı.");
+        return JwtHelper.GenerateJwtToken(user.Email, _configuration);
     }
 }
