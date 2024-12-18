@@ -21,20 +21,31 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
     }
 
     [HttpPost("kayit")]
-    public IActionResult Register([FromBody]User user)
+    public IActionResult Register([FromBody] User user)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = _userService.Register(user);
-            if(result)
-                return Ok();
-            return BadRequest();
+            if (result)
+                return Ok(new { success = true, message = "Kayıt başarılı!" });
+
+            return BadRequest(new { success = false, message = "Kullanıcı kaydı başarısız oldu." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Hata: {ex.Message}");
+            return StatusCode(500, new
+            {
+                success = false,
+                message = $"Sunucu hatası: {ex.Message}"
+            });
         }
     }
+
     
     [HttpPost("giris")]
     public IActionResult Login([FromBody] User user)
