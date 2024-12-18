@@ -17,7 +17,7 @@ public class User
         ErrorMessage = "Şifre en az 6 karakter, büyük harf, küçük harf, rakam ve özel karakter içermelidir.")]
     public string Password { get; set; }
     
-    [RegularExpression(@"^05\d{8}$", ErrorMessage = "Yanış formatta numara...")]
+    [RegularExpression(@"^05\d{9}$", ErrorMessage = "Yanış formatta numara...")]
     public string? Phone { get; set; }
     public DateTime CreateTime { get; set; }
     
