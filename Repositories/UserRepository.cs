@@ -32,7 +32,10 @@ public class UserRepository
                 cmd.Parameters.AddWithValue("@Email", user.Email);
                 cmd.Parameters.AddWithValue("@Sifre", user.Password);
                 cmd.Parameters.AddWithValue("@Telefon", user.Phone);
-                
+                if (!string.IsNullOrEmpty(user.Role)) //null değilse
+                {
+                    cmd.Parameters.AddWithValue("@Rol", user.Role);
+                }
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
@@ -55,7 +58,8 @@ public class UserRepository
                     {
                         var user = new User
                         {
-                            Password = reader.GetString(reader.GetOrdinal("sifre")) // Hashlenmiş parola
+                            Password = reader.GetString(reader.GetOrdinal("sifre")), // Hashlenmiş parola
+                            Role=reader.GetString(reader.GetOrdinal("rol"))
                         };
                         //Console.WriteLine($"Veritabanından alınan parola hash: {user.Password}");
                         return user;

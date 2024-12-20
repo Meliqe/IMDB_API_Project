@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-using Imdb.Helpers;
+﻿using Imdb.Helpers;
 using Imdb.Repositories;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
+
 
 namespace Imdb.Services;
 
@@ -19,8 +17,7 @@ public class UserService
 
     public bool Register(User user)
     {
-        user.Id = Guid.NewGuid();        
-        user.CreateTime = DateTime.Now;
+        user.Role="admin";
         var result = _userRepository.KullaniciKayit(user);
         return result;
     }
@@ -28,16 +25,19 @@ public class UserService
     public string Login(User user)
     {
         var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
+        Console.WriteLine(storedUser.Role);
+        Console.WriteLine(user.Email);
+        user.Role = storedUser.Role; 
+        Console.WriteLine(user.Role);
         if (storedUser == null)
         {
             throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
         }
-        
         var isPasswordValid = HashHelper.VerifyHash(user.Password, storedUser.Password);
         if (!isPasswordValid)
         {
             throw new UnauthorizedAccessException("E-posta veya şifre hatalı.");
         }
-        return JwtHelper.GenerateJwtToken(user.Email, _configuration);
+        return JwtHelper.GenerateJwtToken(user.Email,user.Role, _configuration);
     }
 }

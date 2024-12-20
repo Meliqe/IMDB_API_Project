@@ -10,7 +10,7 @@ namespace Imdb.Helpers;
 public class JwtHelper
 {
     //token üretecek metot,Bu metot, doğrulama işlemi değil, token üretimi için yazılmıştır.
-    public static string GenerateJwtToken(string email,IConfiguration configuration)
+    public static string GenerateJwtToken(string email, string role,IConfiguration configuration)
     {
         // 1. Gerekli ayarları alacağız
         // 2. Kullanıcı bilgileri için claim'ler oluşturacağız
@@ -30,6 +30,7 @@ public class JwtHelper
         {
             new Claim(JwtRegisteredClaimNames.Sub, email), //sub tokenın kime ait olduğunu belirtir
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //Token'ı eşsiz yapmak için
+            new Claim(ClaimTypes.Role,role)
         };
  
         //token imzalama adımına geldik bunun için kendi secret keyimiz ile imzalayacağız

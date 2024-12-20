@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 
 public class User
-{
+{ 
     public Guid Id { get; set; }
     
     [RegularExpression(@"^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$", ErrorMessage = "Sadece harfler kullanılabilir...")]
@@ -20,5 +20,5 @@ public class User
     [RegularExpression(@"^05\d{9}$", ErrorMessage = "Yanış formatta numara...")]
     public string? Phone { get; set; }
     public DateTime CreateTime { get; set; }
-    
+    public string? Role { get; set; }
 }
