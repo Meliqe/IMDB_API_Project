@@ -17,9 +17,6 @@ namespace Imdb.Repositories
         public List<Film> GetAllFilms()
         {
             var films = new List<Film>();
-
-            try
-            {
                 using (var conn = new SqlConnection(_connectionString))
                 {
                     conn.Open();
@@ -61,12 +58,6 @@ namespace Imdb.Repositories
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Hata: {ex.Message}");
-            }
-
             return films;
         }
     }

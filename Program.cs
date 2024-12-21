@@ -27,6 +27,8 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<FilmRepository>();
+builder.Services.AddScoped<FilmServices>();
 
 builder.Services.AddAuthentication(options =>
 {
