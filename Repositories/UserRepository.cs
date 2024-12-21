@@ -13,7 +13,6 @@ public class UserRepository
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
-    //Fonksiyonlar
 
     //Kullanıcı Kayıt
     public bool KullaniciKayit(User user)

@@ -45,6 +45,35 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 });
+// Veritabanı bağlantı ayarlarını doğru şekilde yapılandırın
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+// FilmRepository'yi başlatın
+var filmRepository = new FilmRepository(configuration);
+
+// GetAllFilms fonksiyonunu çağırın ve sonuçları yazdırın
+try
+{
+    var films = filmRepository.GetAllFilms();
+
+    foreach (var film in films)
+    {
+        Console.WriteLine($"Film Adı: {film.FilmName}");
+        Console.WriteLine($"Açıklama: {film.FilmDescription}");
+        Console.WriteLine($"Türler: {string.Join(", ", film.Genres?.Select(g => g.GenreName) ?? new List<string>())}");
+        Console.WriteLine($"Oyuncular: {string.Join(", ", film.Actors?.Select(a => a.ActorName) ?? new List<string>())}");
+        Console.WriteLine($"Yayın Tarihi: {film.FilmReleaseDate?.ToString("yyyy-MM-dd")}");
+        Console.WriteLine($"Süre: {film.FilmDuration} dk");
+        Console.WriteLine($"Poster Yolu: {film.PosterPath}");
+        Console.WriteLine("--------------------------");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Bir hata oluştu: {ex.Message}");
+}
 
 var app = builder.Build();
 
