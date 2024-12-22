@@ -12,7 +12,7 @@ public class FilmController:ControllerBase
         _filmRepository = filmRepository;
     }
 
-    [HttpPost("api/films")]
+    [HttpGet("api/films")]
     public IActionResult GetFilms()
     {
         try
