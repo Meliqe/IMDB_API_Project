@@ -1,24 +1,26 @@
 ﻿using Imdb.Repositories;
+using Imdb.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imdb.Controller;
 [ApiController]
+[Route("api/[controller]")]
 public class FilmController:ControllerBase
 {
-    private readonly FilmRepository _filmRepository;
+    private readonly FilmServices _filmService;
 
-    public FilmController(FilmRepository filmRepository)
+    public FilmController(FilmServices filmService)
     {
-        _filmRepository = filmRepository;
+        _filmService = filmService;
     }
 
-    [HttpGet("api/films")]
+    [HttpGet("allfilms")]
     public IActionResult GetFilms()
     {
         try
         {
-            var films = _filmRepository.GetAllFilms();
-            if (films == null || films.Count == 0)
+            var films = _filmService.GetFilms();
+            if (films.Count == 0)
             {
                 return NotFound("Hiç film bulunamadı.");
             }

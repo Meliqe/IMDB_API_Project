@@ -44,12 +44,8 @@ namespace Imdb.Repositories
                                         {
                                             ActorName = t.Trim()
                                         }).ToList(),
-                                    FilmReleaseDate = reader["yayinlanma_tarihi"] != DBNull.Value
-                                        ? Convert.ToDateTime(reader["yayinlanma_tarihi"])
-                                        : (DateTime?)null,
-                                    FilmDuration = reader["film_suresi"] != DBNull.Value
-                                        ? Convert.ToInt32(reader["film_suresi"])
-                                        : (int?)null,
+                                    FilmReleaseDate = Convert.ToDateTime(reader["yayinlanma_tarihi"]),
+                                    FilmDuration = Convert.ToInt32(reader["film_suresi"]),
                                     PosterPath = reader["poster_url"]?.ToString()
                                 };
 
