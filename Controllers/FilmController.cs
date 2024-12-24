@@ -32,4 +32,22 @@ public class FilmController:ControllerBase
         }
     }
     
+    [HttpGet("allgenres")]
+    public IActionResult GetGenres()
+    {
+        try
+        {
+            var genres = _filmService.GetGenres();
+            if (genres.Count == 0)
+            {
+                return NotFound("Hiç film bulunamadı.");
+            }
+            return Ok(genres); // 200 OK ve film listesi döndür.
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500,ex.Message);
+        }
+    }
+    
 }

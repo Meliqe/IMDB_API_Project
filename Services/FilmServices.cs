@@ -27,4 +27,19 @@ public class FilmServices
            return new List<Film>(); //boş film listesi döner 
         }
     }
+
+    public List<Genre> GetGenres()
+    {
+        try
+        {
+            var genres = _filmRepository.GetAllGenre();
+            return genres;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return new List<Genre>(); 
+        }
+    }
+    
 }

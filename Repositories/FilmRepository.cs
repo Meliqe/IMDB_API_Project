@@ -56,5 +56,30 @@ namespace Imdb.Repositories
                 }
             return films;
         }
+
+        public List<Genre> GetAllGenre()
+        {
+            var genres = new List<Genre>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("GetTurBilgileri", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var genre = new Genre
+                            {
+                               GenreName = reader["tur_adi"]?.ToString(),
+                            };
+                            genres.Add(genre);
+                        }
+                    }
+                }
+            }
+            return genres;
+        }
     }
 }

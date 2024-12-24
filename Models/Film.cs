@@ -8,8 +8,6 @@ public class Film
     public DateTime? FilmReleaseDate { get; set; }
     public int? FilmDuration { get; set; }
     public string? PosterPath { get; set; }
-    
     public List<Genre>? Genres { get; set; }
-    
     public List<Actor>? Actors { get; set; }
 }
