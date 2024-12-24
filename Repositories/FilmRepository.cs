@@ -1,6 +1,7 @@
 ﻿using Imdb.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Imdb.Repositories
 {
@@ -80,6 +81,35 @@ namespace Imdb.Repositories
                 }
             }
             return genres;
+        }
+
+        public List<Actor> GetAllActors()
+        {
+            var actors = new List<Actor>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("GetOyuncuBilgileri", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var actor = new Actor()
+                            {
+                                Id = Guid.Parse(reader["oyuncu_id"].ToString()),
+                                ActorName = reader["oyuncu_adi"]?.ToString(),
+                                PhotoPath = reader["oyuncu_fotografi"]?.ToString(),
+                                Biography = reader["oyuncu_biyografi"]?.ToString(),
+                                BirthDate = Convert.ToDateTime(reader["oyuncu_dogum_tarihi"])
+                            };
+                            actors.Add(actor);
+                        }
+                    }
+                }
+            }
+            return actors;
         }
     }
 }

@@ -49,5 +49,16 @@ public class FilmController:ControllerBase
             return StatusCode(500,ex.Message);
         }
     }
+
+    [HttpGet("allactors")]
+    public IActionResult GetActors()
+    {
+        var actors = _filmService.GetActors();
+        if (actors.Count == 0)
+        {
+            return NotFound("Actor bilgisi gelmedi");
+        }
+        return Ok(actors);
+    }
     
 }

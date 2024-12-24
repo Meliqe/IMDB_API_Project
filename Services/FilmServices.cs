@@ -41,5 +41,20 @@ public class FilmServices
             return new List<Genre>(); 
         }
     }
+
+    public List<Actor> GetActors()
+    {
+        try
+        {
+            var actors = _filmRepository.GetAllActors();
+            return actors;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return new List<Actor>();  //boş liste
+        }
+    }
+    
     
 }
