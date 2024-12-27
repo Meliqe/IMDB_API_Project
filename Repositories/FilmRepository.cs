@@ -32,7 +32,7 @@ namespace Imdb.Repositories
                             {
                                 var film = new Film
                                 {
-                                    FilmId = Guid.NewGuid(),
+                                    FilmId = (Guid)reader["film_id"],
                                     FilmName = reader["film_adi"]?.ToString(),
                                     FilmDescription = reader["film_aciklamasi"]?.ToString(),
                                     Genres = reader["turler"]?.ToString()?.Split(',')
@@ -100,7 +100,7 @@ namespace Imdb.Repositories
                         {
                             var actor = new Actor()
                             {
-                                Id = Guid.Parse(reader["oyuncu_id"].ToString()),
+                                Id = (Guid)reader["oyuncu_id"],
                                 ActorName = reader["oyuncu_adi"]?.ToString(),
                                 PhotoPath = reader["oyuncu_fotografi"] as byte[] != null 
                                     ? Convert.ToBase64String((byte[])reader["oyuncu_fotografi"]) 
