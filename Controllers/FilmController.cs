@@ -1,5 +1,7 @@
-﻿using Imdb.Repositories;
+﻿using Imdb.Models;
+using Imdb.Repositories;
 using Imdb.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imdb.Controller;
@@ -60,5 +62,25 @@ public class FilmController:ControllerBase
         }
         return Ok(actors);
     }
-    
+
+    [HttpGet("filmdetails/{id}")]
+    public IActionResult GetFilmDetails(Guid id)
+    {
+        try
+        {
+            var(film,actor,genre) = _filmService.GetFilmById(id);
+            var response = new
+            {
+                Film = film,
+                Actor = actor,
+                Genre = genre
+            };
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500,"Film detayları gelmedi");
+        }
+    }
 }

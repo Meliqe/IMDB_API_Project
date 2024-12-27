@@ -24,7 +24,7 @@ public class FilmServices
         catch (Exception ex)
         {
            Console.WriteLine(ex.Message);
-           return new List<Film>(); //boş film listesi döner 
+           throw;
         }
     }
 
@@ -38,7 +38,7 @@ public class FilmServices
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            return new List<Genre>(); 
+            throw;
         }
     }
 
@@ -52,9 +52,23 @@ public class FilmServices
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            return new List<Actor>();  //boş liste
+            throw;
         }
     }
-    
+
+    public (Film film, List<Actor> actors , List<Genre> genres) GetFilmById(Guid filmId)
+    {
+        try
+        {
+            (Film Film, List<Actor> Actors, List<Genre> Genres) filmDetails = _filmRepository.GetFilmById(filmId);
+           return filmDetails;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+        
+    }
     
 }
