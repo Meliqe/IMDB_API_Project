@@ -75,7 +75,8 @@ namespace Imdb.Repositories
                         while (reader.Read())
                         {
                             var genre = new Genre
-                            {
+                            { 
+                                Id = Convert.ToInt32(reader["tur_id"]),
                                GenreName = reader["tur_adi"]?.ToString(),
                             };
                             genres.Add(genre);
