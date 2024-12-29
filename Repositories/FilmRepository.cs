@@ -142,8 +142,8 @@ namespace Imdb.Repositories
                                 FilmId = (Guid)reader["film_id"],
                                 FilmName = reader["film_adi"]?.ToString(),
                                 FilmDescription = reader["film_aciklamasi"]?.ToString(),
-                                FilmDuration = Convert.ToInt32(reader["film_suresi"]),
                                 FilmReleaseDate = Convert.ToDateTime(reader["yayinlanma_tarihi"]),
+                                FilmDuration = Convert.ToInt32(reader["film_suresi"]),
                                 PosterPath = reader["poster_url"] as byte[] != null
                                 ? Convert.ToBase64String((byte[])reader["poster_url"])
                                 :null,
@@ -218,6 +218,45 @@ namespace Imdb.Repositories
                     }
                 }
             }
+        }
+
+        public List<Film> GetFilmsByCategoryName(string categoryName)
+        {
+            var films = new List<Film>();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("GetFilmsByCategoryName", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    var categoryNameParameter = new SqlParameter
+                    {
+                        ParameterName = "@CategoryName",
+                        SqlDbType = SqlDbType.NVarChar,
+                        Value = categoryName
+                    };
+                    cmd.Parameters.Add(categoryNameParameter);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var film = new Film()
+                            {
+                                FilmId = (Guid)reader["film_id"],
+                                FilmName = reader["film_adi"]?.ToString(),
+                                FilmDescription = reader["film_aciklamasi"]?.ToString(),
+                                FilmReleaseDate = Convert.ToDateTime(reader["yayinlanma_tarihi"]),
+                                FilmDuration = Convert.ToInt32(reader["film_suresi"]),
+                                PosterPath = reader["poster_url"] as byte[] != null
+                                    ? Convert.ToBase64String((byte[])reader["poster_url"])
+                                    : null,
+                            };
+                            films.Add(film);
+                        }
+                    }
+                }
+            }
+            return films;
         }
     }
 }

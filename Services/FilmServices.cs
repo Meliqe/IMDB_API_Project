@@ -84,5 +84,19 @@ public class FilmServices
             throw;
         }
     }
+
+    public List<Film> GetFilmsByCategoryName(string categoryName)
+    {
+        try
+        {
+            var films = _filmRepository.GetFilmsByCategoryName(categoryName);
+            return films;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
     
 }

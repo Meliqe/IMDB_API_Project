@@ -99,9 +99,20 @@ public class FilmController:ControllerBase
             return StatusCode(500,"Oyuncu detayları gelmedi!");
         }
     }
-    
-    
-    
-    
+
+    [HttpGet("filmsbycategoryname/{categoryName}")]
+    public IActionResult GetFilmsByCategoryName(string categoryName)
+    {
+        try
+        {
+            var films = _filmService.GetFilmsByCategoryName(categoryName);
+            return Ok(films);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500,"İlgili kategoriye ait filmler gelmedi!");
+        }
+    }
     
 }
