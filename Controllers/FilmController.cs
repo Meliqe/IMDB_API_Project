@@ -40,6 +40,7 @@ public class FilmController:ControllerBase
         try
         {
             var genres = _filmService.GetGenres();
+           
             if (genres.Count == 0)
             {
                 return NotFound("Hiç film bulunamadı.");
@@ -83,4 +84,24 @@ public class FilmController:ControllerBase
             return StatusCode(500,"Film detayları gelmedi");
         }
     }
+
+    [HttpGet("oyuncudetails/{id}")]
+    public IActionResult GetActorDetails(Guid id)
+    {
+        try
+        {
+               var actor = _filmService.GetActorById(id);
+               return Ok(actor);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500,"Oyuncu detayları gelmedi!");
+        }
+    }
+    
+    
+    
+    
+    
 }

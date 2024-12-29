@@ -51,10 +51,11 @@ namespace Imdb.Repositories
                                         ? Convert.ToBase64String((byte[])reader["poster_url"]) 
                                         : null
                                 };
-
+ 
+                                //Console.WriteLine("film idleri:" +film.FilmId);
                                 films.Add(film);
                             }
-                        }
+                        }   
                     }
                 }
             return films;
@@ -176,6 +177,44 @@ namespace Imdb.Repositories
                             }
                         }
                         return (film, actors, genres);
+                    }
+                }
+            }
+        }
+
+        public Actor GetActorById(Guid actorId)
+        {
+            using (var conn=new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("GetOyuncuByID", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    var actorIdParameter = new SqlParameter
+                    {
+                        ParameterName = "@OyuncuID", //procedurun beklediği parametre
+                        //ismi aynı olmak zorunda
+                        SqlDbType = SqlDbType.UniqueIdentifier,
+                        Value = actorId
+                    };
+                    cmd.Parameters.Add(actorIdParameter);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        Actor actor = null;
+                        while (reader.Read())
+                        {
+                            actor = new Actor()
+                            {
+                                Id = (Guid)reader["oyuncu_id"],
+                                ActorName = reader["oyuncu_adi"]?.ToString(),
+                                Biography = reader["oyuncu_biyografi"]?.ToString(),
+                                BirthDate = Convert.ToDateTime(reader["oyuncu_dogum_tarihi"]),
+                                PhotoPath = reader["oyuncu_fotografi"] as byte[] != null
+                                    ? Convert.ToBase64String((byte[])reader["oyuncu_fotografi"])
+                                    :null,
+                            };
+                        }   
+                        return actor;
                     }
                 }
             }

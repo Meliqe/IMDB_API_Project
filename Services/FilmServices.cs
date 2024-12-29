@@ -70,5 +70,19 @@ public class FilmServices
         }
         
     }
+
+    public Actor GetActorById(Guid actorId)
+    {
+        try
+        {
+            var actor = _filmRepository.GetActorById(actorId);
+            return actor;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
     
 }
