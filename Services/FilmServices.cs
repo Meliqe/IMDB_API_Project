@@ -98,5 +98,21 @@ public class FilmServices
             throw;
         }
     }
+
+    public void AddComment(Comment comment)
+    {
+        try
+        {
+            _filmRepository.AddComment(comment);
+            Console.WriteLine("yorum başarıyla eklendi");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            //mevcut hatayı üst katmana fırlat
+            throw;
+        }
+    }
+    
     
 }

@@ -316,16 +316,14 @@ namespace Imdb.Repositories
                 using (var cmd = new SqlCommand("GetCommentsByFilmID", conn)) 
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
-                    // Parametre ekleme
+                    
                     cmd.Parameters.Add(new SqlParameter
                     {
                         ParameterName = "@FilmID",
                         SqlDbType = SqlDbType.UniqueIdentifier,
                         Value = filmId
                     });
-
-                    // Veri okuyucu
+                    
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -344,6 +342,5 @@ namespace Imdb.Repositories
             }
             return comments; 
         }
-
     }
 }

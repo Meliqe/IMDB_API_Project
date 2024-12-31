@@ -114,5 +114,24 @@ public class FilmController:ControllerBase
             return StatusCode(500,"İlgili kategoriye ait filmler gelmedi!");
         }
     }
+
+    [HttpPost("addcomment")]
+    public IActionResult AddComment([FromBody] Comment comment)
+    {
+        if (comment.UserId == Guid.Empty || comment.FilmId == Guid.Empty || string.IsNullOrEmpty(comment.Content))
+        {
+            return BadRequest("Geçersiz yorum bilgileri.");
+        }
+        try
+        {
+            _filmService.AddComment(comment);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("yorum eklenemedi!!");
+            return StatusCode(500,"yorum eklerken bir hata oluştu");
+        }
+    }
     
 }
