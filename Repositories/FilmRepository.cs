@@ -259,5 +259,51 @@ namespace Imdb.Repositories
             }
             return films;
         }
+
+        public void AddComment(Comment comment)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new SqlCommand("yorum_ekle", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    
+                    cmd.Parameters.Add(new SqlParameter
+                    {
+                        ParameterName = "@KullaniciID",
+                        SqlDbType = SqlDbType.UniqueIdentifier,
+                        Value = comment.UserId
+                    });
+                    
+                    cmd.Parameters.Add(new SqlParameter
+                    {
+                        ParameterName = "@FilmID",
+                        SqlDbType = SqlDbType.UniqueIdentifier,
+                        Value = comment.FilmId
+                    });
+
+                    cmd.Parameters.Add(new SqlParameter
+                    {
+                        ParameterName = "@Yorum",
+                        SqlDbType = SqlDbType.NVarChar,
+                        Value = comment.Content
+                    });
+
+                    //procedure çalıştır
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine("yorum eklendi");
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Yorum eklenirken bir hata oluştu: " + ex.Message);
+                    }
+                }
+            }
+        }
+
     }
 }
