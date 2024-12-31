@@ -305,5 +305,45 @@ namespace Imdb.Repositories
             }
         }
 
+        public List<Comment> GetCommentsByFilmId(Guid filmId)
+        {
+            var comments = new List<Comment>();
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new SqlCommand("GetCommentsByFilmID", conn)) 
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Parametre ekleme
+                    cmd.Parameters.Add(new SqlParameter
+                    {
+                        ParameterName = "@FilmID",
+                        SqlDbType = SqlDbType.UniqueIdentifier,
+                        Value = filmId
+                    });
+
+                    // Veri okuyucu
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            comments.Add(new Comment
+                            {
+                                CommentId = (Guid)reader["yorum_id"], 
+                                Content = reader["yorum"].ToString(), 
+                                PublishedDate = Convert.ToDateTime(reader["yorum_yayinlanma_tarihi"]),
+                                UserId = (Guid)reader["userid"], 
+                                FilmId = (Guid)reader["film_id"]
+                            });
+                        }
+                    }
+                }
+            }
+            return comments; 
+        }
+
     }
 }
