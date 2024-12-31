@@ -113,6 +113,19 @@ public class FilmServices
             throw;
         }
     }
-    
+
+    public List<Comment> GetCommentsByFilmId(Guid filmId)
+    {
+        try
+        {
+            var comments = _filmRepository.GetCommentsByFilmId(filmId);
+            return comments;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+    }
     
 }

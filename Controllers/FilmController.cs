@@ -133,5 +133,18 @@ public class FilmController:ControllerBase
             return StatusCode(500,"yorum eklerken bir hata oluştu");
         }
     }
-    
+
+    [HttpGet("allcommentsbyfilmid/{filmid}")]
+    public IActionResult GetCommentsByFilmId(Guid filmid)
+    {
+        try
+        {
+            var comments = _filmService.GetCommentsByFilmId(filmid);
+            return Ok(comments);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500,"filme gelen yorumları görüntülerken hata!!");
+        }
+    }
 }
