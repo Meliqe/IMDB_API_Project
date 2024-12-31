@@ -185,6 +185,7 @@ namespace Imdb.Repositories
 
         public Actor GetActorById(Guid actorId)
         {
+            Actor actor = null;
             using (var conn=new SqlConnection(_connectionString))
             {
                 conn.Open();
@@ -201,7 +202,6 @@ namespace Imdb.Repositories
                     cmd.Parameters.Add(actorIdParameter);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        Actor actor = null;
                         while (reader.Read())
                         {
                             actor = new Actor()
