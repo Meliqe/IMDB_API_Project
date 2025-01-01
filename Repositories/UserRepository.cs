@@ -57,10 +57,11 @@ public class UserRepository
                     {
                         var user = new User
                         {
-                            Password = reader.GetString(reader.GetOrdinal("sifre")), // Hashlenmiş parola
-                            Role=reader.GetString(reader.GetOrdinal("rol"))
+                            Id = (Guid)reader["id"],
+                            Email = reader["email"].ToString(),
+                            Password = reader.GetString(reader.GetOrdinal("sifre")), 
+                            Role=reader.GetString(reader.GetOrdinal("rol")),
                         };
-                        //Console.WriteLine($"Veritabanından alınan parola hash: {user.Password}");
                         return user;
                     }
                 }
@@ -68,9 +69,42 @@ public class UserRepository
         }
         return null;
     }
-    
-    
-    
-    
-    
+
+    public User GetUserById(Guid userid)
+    {
+        User user = null;
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("GetKullaniciByID",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@UserId",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = userid
+                });
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        user = new User
+                        {
+                            Id = (Guid)reader["id"],
+                            Name = reader["isim"].ToString(),
+                            Surname = reader["soyisim"].ToString(),
+                            Email = reader["email"].ToString(),
+                            Password = reader["sifre"].ToString(),
+                            Phone = reader["telefon"].ToString(),
+                            CreateTime = Convert.ToDateTime(reader["kayit_tarihi"]),
+                            Role =reader["rol"].ToString(),
+                        };
+                    }
+                    return user;
+                }
+            }
+        }
+    }
+
 }

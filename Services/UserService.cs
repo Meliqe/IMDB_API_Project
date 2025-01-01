@@ -25,10 +25,6 @@ public class UserService
     public string Login(User user)
     {
         var storedUser = _userRepository.KullaniciBilgiGetir(user.Email);
-        Console.WriteLine(storedUser.Role);
-        Console.WriteLine(user.Email);
-        user.Role = storedUser.Role; 
-        Console.WriteLine(user.Role);
         if (storedUser == null)
         {
             throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
@@ -38,6 +34,20 @@ public class UserService
         {
             throw new UnauthorizedAccessException("E-posta veya şifre hatalı.");
         }
-        return JwtHelper.GenerateJwtToken(user.Email,user.Role, _configuration);
+        return JwtHelper.GenerateJwtToken(storedUser.Email,storedUser.Role,storedUser.Id, _configuration);
+    }
+
+    public User GetUserById(Guid userId)
+    {
+        try
+        {
+            var user = _userRepository.GetUserById(userId);
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

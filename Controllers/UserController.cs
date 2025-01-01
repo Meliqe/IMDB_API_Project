@@ -76,4 +76,21 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
             });
         }
     }
+
+    [HttpGet("userdetails/{id}")]
+    //routerdaki id string kabul ediliyor
+    public IActionResult GetUserDetails(Guid id)
+    {
+        try
+        {
+            var user = _userService.GetUserById(id);
+            return Ok(user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500,"kullanıcı bilgileri gelmedi!!");
+        }
+    }
+    
 }
