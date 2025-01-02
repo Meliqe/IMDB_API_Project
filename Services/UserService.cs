@@ -29,6 +29,7 @@ public class UserService
         {
             throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
         }
+        Console.WriteLine(storedUser.Role);
         var isPasswordValid = HashHelper.VerifyHash(user.Password, storedUser.Password);
         if (!isPasswordValid)
         {

@@ -35,6 +35,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
 }).AddJwtBearer(options => //token doğrulama parametreleri
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -45,7 +46,21 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true, //token bir secret key ile imzalanmış mı
         ValidIssuer = jwtSettings["Issuer"], 
         ValidAudience = jwtSettings["Audience"], 
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" 
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context => //Token doğrulama işlemi başarısız olduğunda tetiklenir. 
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context => //Token doğrulama işlemi başarılı olduğunda tetiklenir.
+        {
+            Console.WriteLine("Token validated successfully.");
+            return Task.CompletedTask;
+        }
     };
 });
 // Veritabanı bağlantı ayarlarını doğru şekilde yapılandırın
