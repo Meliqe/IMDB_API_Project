@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Imdb.Helpers;
 using Imdb.Repositories;
 using Imdb.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 //
 namespace Imdb.Controller;
@@ -77,6 +78,7 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
         }
     }
 
+    [Authorize(Roles = "user")]
     [HttpGet("userdetails/{id}")]
     //routerdaki id string kabul ediliyor
     public IActionResult GetUserDetails(Guid id)

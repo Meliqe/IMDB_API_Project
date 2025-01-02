@@ -30,18 +30,19 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<FilmRepository>();
 builder.Services.AddScoped<FilmServices>();
 
+//jwt doğrulama mekanizması
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+}).AddJwtBearer(options => //token doğrulama parametreleri
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true, //tokenı oluşturan uygulama doğru mu
+        ValidateAudience = true,//tokenın hedef kitlesi doğru mu
+        ValidateLifetime = true, //tokenın süresi dolmuş mu 
+        ValidateIssuerSigningKey = true, //token bir secret key ile imzalanmış mı
         ValidIssuer = jwtSettings["Issuer"], 
         ValidAudience = jwtSettings["Audience"], 
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
