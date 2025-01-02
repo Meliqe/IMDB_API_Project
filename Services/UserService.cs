@@ -17,7 +17,7 @@ public class UserService
 
     public bool Register(User user)
     {
-        user.Role="admin";
+        //user.Role="admin";
         var result = _userRepository.KullaniciKayit(user);
         return result;
     }
