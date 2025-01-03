@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Imdb.Repositories
 {
@@ -260,6 +261,7 @@ namespace Imdb.Repositories
             return films;
         }
 
+        [Authorize(Roles = "user")]
         public void AddComment(Comment comment)
         {
             using (var conn = new SqlConnection(_connectionString))
