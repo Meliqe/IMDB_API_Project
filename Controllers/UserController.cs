@@ -100,8 +100,8 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
     {
         try
         {
-            _userService.KullaniciBilgiGuncelle(user);
-            return Ok();
+            var updateuser=_userService.KullaniciBilgiGuncelle(user);
+            return Ok(updateuser);
         }
         catch (Exception e)
         {

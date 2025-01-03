@@ -52,12 +52,13 @@ public class UserService
         }
     }
 
-    public void KullaniciBilgiGuncelle(User user)
+    public User KullaniciBilgiGuncelle(User user)
     {
         try
         {
-            _userRepository.KullaniciBilgiGuncelle(user);
+            var updateuser =_userRepository.KullaniciBilgiGuncelle(user);
             Console.WriteLine("Kullanici bilgileri başarıyle güncellendi!");
+            return updateuser;
         }
         catch (Exception e)
         {

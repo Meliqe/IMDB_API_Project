@@ -108,9 +108,9 @@ public class UserRepository
         }
     }
 
-    public void KullaniciBilgiGuncelle(User user)
+    public User KullaniciBilgiGuncelle(User user)
     {
-        User u = null;
+        User updateuser = null;
         using (var conn = new SqlConnection(_connectionString))
         {
             conn.Open();
@@ -142,14 +142,23 @@ public class UserRepository
                     Value = user.Phone
                 });
 
-                try
+                using (var reader = cmd.ExecuteReader())
                 {
-                    cmd.ExecuteNonQuery();
-                    Console.WriteLine("Bilgiler güncellendi");
-                }
-                catch (SqlException ex)
-                {
-                    throw new Exception("Bilgiler güncellenirken hata: " + ex.Message);
+                    if (reader.Read()) //sadece tek satır okuyacağı için
+                    {
+                        updateuser= new User
+                        {
+                            Id = (Guid)reader["id"],
+                            Name = reader["isim"].ToString(),
+                            Surname = reader["soyisim"].ToString(),
+                            Email = reader["email"].ToString(),
+                            Password = reader["sifre"].ToString(),
+                            Phone = reader["telefon"].ToString(),
+                            CreateTime = Convert.ToDateTime(reader["kayit_tarihi"]),
+                            Role =reader["rol"].ToString(),
+                        };
+                    }
+                    return updateuser;
                 }
             }
         }
