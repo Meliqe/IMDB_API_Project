@@ -1,7 +1,6 @@
 ﻿using Imdb.Models;
-using Imdb.Repositories;
 using Imdb.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imdb.Controller;
@@ -115,6 +114,7 @@ public class FilmController:ControllerBase
         }
     }
 
+    [Authorize(Roles = "user")]
     [HttpPost("addcomment")]
     public IActionResult AddComment([FromBody] Comment comment)
     {
