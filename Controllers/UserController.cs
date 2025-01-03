@@ -94,5 +94,20 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
             return StatusCode(500,"kullanıcı bilgileri gelmedi!!");
         }
     }
+
+    [HttpPatch("updateuser")]
+    public IActionResult UpdateUserInfo([FromBody] User user)
+    {
+        try
+        {
+            _userService.KullaniciBilgiGuncelle(user);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "kullanıcı bilgileri güncellenemedi!!");
+        }
+    }
     
 }

@@ -51,4 +51,18 @@ public class UserService
             throw;
         }
     }
+
+    public void KullaniciBilgiGuncelle(User user)
+    {
+        try
+        {
+            _userRepository.KullaniciBilgiGuncelle(user);
+            Console.WriteLine("Kullanici bilgileri başarıyle güncellendi!");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

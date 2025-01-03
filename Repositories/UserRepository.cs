@@ -108,4 +108,50 @@ public class UserRepository
         }
     }
 
+    public void KullaniciBilgiGuncelle(User user)
+    {
+        User u = null;
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("kullaniciBilgiGuncelle", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@KullaniciID",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = user.Id
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@KullaniciIsim",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = user.Name
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@KullaniciSoyisim",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = user.Surname
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@KullaniciTelefon",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = user.Phone
+                });
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine("Bilgiler güncellendi");
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Bilgiler güncellenirken hata: " + ex.Message);
+                }
+            }
+        }
+    }
 }
