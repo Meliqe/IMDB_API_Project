@@ -197,4 +197,51 @@ public class UserRepository
         }
         return comments;
     }
+
+    public CommentsByUserDto UpdateUserComment(Guid commentId, Guid userId, string content)
+    {
+        CommentsByUserDto comment = null;
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("EditComment",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@CommentId",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = commentId
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@UserId",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = userId
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@Comment",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = content
+                });
+
+                using (var reader =cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        comment = new CommentsByUserDto
+                        {
+                            CommentId = (Guid)reader["yorum_id"],
+                            Content = reader["yorum"].ToString(),
+                            PublishedDate = Convert.ToDateTime(reader["yorum_yayinlanma_tarihi"]),
+                            FilmId = (Guid)reader["film_id"],
+                            FilmName = reader["film_adi"].ToString()
+                        };
+                    }
+                    return comment;
+                }
+            }
+        }
+    }
 }

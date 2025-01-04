@@ -80,4 +80,19 @@ public class UserService
             throw;
         }
     }
+
+    public CommentsByUserDto UpdateUserComment(Guid commentId, Guid userId, string content)
+    {
+        try
+        {
+            var comment = _userRepository.UpdateUserComment(commentId, userId, content);
+            return comment;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
 }

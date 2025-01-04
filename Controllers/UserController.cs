@@ -1,6 +1,8 @@
 ﻿
 using System.Linq.Expressions;
+using Imdb.Dtos;
 using Imdb.Helpers;
+using Imdb.Models;
 using Imdb.Repositories;
 using Imdb.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -125,6 +127,20 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
         {
             Console.WriteLine(e);
             return StatusCode(500, "Kullanıcının yaptığı yorumlar gelmedi");
+        }
+    }
+
+    [HttpPatch("updatecomment")]
+    public IActionResult UpdateComment([FromBody] UpdateCommentRequest request)
+    {
+        try
+        {
+            var cmt=_userService.UpdateUserComment(request.CommentId, request.UserId, request.Content);
+            return Ok(cmt);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, "yorum güncellenemedi!!");
         }
     }
 }
