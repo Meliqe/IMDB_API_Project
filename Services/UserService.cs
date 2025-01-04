@@ -1,4 +1,5 @@
-﻿using Imdb.Helpers;
+﻿using Imdb.Dtos;
+using Imdb.Helpers;
 using Imdb.Repositories;
 
 
@@ -58,6 +59,20 @@ public class UserService
         {
             var updateuser =_userRepository.KullaniciBilgiGuncelle(user);
             return updateuser;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public List<CommentsByUserDto> GetCommnetsByUserId(Guid userId)
+    {
+        try
+        {
+            var comments = _userRepository.GetCommentsByUserId(userId);
+            return comments;
         }
         catch (Exception e)
         {

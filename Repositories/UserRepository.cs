@@ -1,5 +1,6 @@
 ﻿
 using System.Data;
+using Imdb.Dtos;
 using Imdb.Helpers;
 using Microsoft.Data.SqlClient;
 
@@ -69,8 +70,6 @@ public class UserRepository
         }
         return null;
     }
-
-    
     public User GetUserById(Guid userid)
     {
         User user = null;
@@ -162,5 +161,40 @@ public class UserRepository
     }
     return null;
 }
-    
+
+    public List<CommentsByUserDto> GetCommentsByUserId(Guid userId)
+    {
+        var comments = new List<CommentsByUserDto>();
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("GetCommentsByUserID", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@KullaniciID",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = userId
+                });
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var commentDto = new CommentsByUserDto
+                        {
+                            CommentId = (Guid)reader["yorum_id"],
+                            Content = reader["yorum"].ToString(),
+                            PublishedDate = Convert.ToDateTime(reader["yorum_yayinlanma_tarihi"]),
+                            FilmId = (Guid)reader["film_id"],
+                            FilmName = reader["film_adi"].ToString()
+                        };
+                       comments.Add(commentDto); 
+                    }
+                }
+            }
+        }
+        return comments;
+    }
 }

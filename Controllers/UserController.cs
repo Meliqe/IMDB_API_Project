@@ -111,5 +111,19 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
             return StatusCode(500, "kullanıcı bilgileri güncellenemedi!!");
         }
     }
-    
+
+    [HttpGet("usercomments/{id}")]
+    public IActionResult GetCommentsByUserId(Guid id)
+    {
+        try
+        {
+            var response = _userService.GetCommnetsByUserId(id);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Kullanıcının yaptığı yorumlar gelmedi");
+        }
+    }
 }
