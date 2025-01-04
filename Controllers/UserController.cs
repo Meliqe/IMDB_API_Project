@@ -130,6 +130,7 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
         }
     }
 
+    [Authorize(Roles = "user")]
     [HttpPatch("updatecomment")]
     public IActionResult UpdateComment([FromBody] UpdateCommentRequest request)
     {
