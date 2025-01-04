@@ -112,6 +112,7 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
         }
     }
 
+    [Authorize(Roles = "user")]
     [HttpGet("usercomments/{id}")]
     public IActionResult GetCommentsByUserId(Guid id)
     {
