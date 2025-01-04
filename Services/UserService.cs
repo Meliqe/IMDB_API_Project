@@ -1,5 +1,6 @@
 ﻿using Imdb.Dtos;
 using Imdb.Helpers;
+using Imdb.Models;
 using Imdb.Repositories;
 
 
@@ -94,5 +95,18 @@ public class UserService
             throw;
         }
     }
-    
+
+    public Rate AddOrUpdateRate(RateRequestDto rateRequestDto)
+    {
+        try
+        {
+            var rate = _userRepository.AddOrUpdateRate(rateRequestDto);
+            return rate;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

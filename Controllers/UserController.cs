@@ -144,4 +144,18 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
             return StatusCode(500, "yorum güncellenemedi!!");
         }
     }
+
+    [HttpPut("addorupdaterate")]
+    public IActionResult AddOrUpdateRate([FromBody] RateRequestDto rateRequestDto)
+    {
+        try
+        {
+            var rate = _userService.AddOrUpdateRate(rateRequestDto);
+            return Ok(rate);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, "Oy verilemedi!!");
+        }
+    }
 }

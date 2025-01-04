@@ -2,6 +2,7 @@
 using System.Data;
 using Imdb.Dtos;
 using Imdb.Helpers;
+using Imdb.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Imdb.Repositories;
@@ -240,6 +241,54 @@ public class UserRepository
                         };
                     }
                     return comment;
+                }
+            }
+        }
+    }
+
+
+    public Rate AddOrUpdateRate(RateRequestDto rateRequestDto)
+    {
+        Rate rate = null;
+        using (var conn= new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd=new SqlCommand("AddOrUpdatePuan", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@UserId",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = rateRequestDto.UserId
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@FilmId",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = rateRequestDto.FilmId
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@Puan",
+                    SqlDbType = SqlDbType.Int,
+                    Value = rateRequestDto.Score
+                });
+
+                using (var reader =cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        rate = new Rate
+                        {
+                            RateId = (Guid)reader["puan_id"],
+                            Score = Convert.ToInt32(reader["puan"]),
+                            RatingDate = Convert.ToDateTime(reader["puanlama_tarihi"]),
+                            UserId = (Guid)reader["userid"],
+                            FilmId = (Guid)reader["film_id"],
+                        };
+                    }
+                    return rate;
                 }
             }
         }
