@@ -57,7 +57,6 @@ public class UserService
         try
         {
             var updateuser =_userRepository.KullaniciBilgiGuncelle(user);
-            Console.WriteLine("Kullanici bilgileri başarıyle güncellendi!");
             return updateuser;
         }
         catch (Exception e)

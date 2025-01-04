@@ -100,6 +100,7 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
     {
         try
         {
+            Console.WriteLine($"Gelen Veri: {user.Name}, {user.Surname}, {user.Phone}");
             var updateuser=_userService.KullaniciBilgiGuncelle(user);
             return Ok(updateuser);
         }

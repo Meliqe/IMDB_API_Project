@@ -109,58 +109,58 @@ public class UserRepository
     }
 
     public User KullaniciBilgiGuncelle(User user)
+{
+    using (var conn = new SqlConnection(_connectionString))
     {
-        User updateuser = null;
-        using (var conn = new SqlConnection(_connectionString))
+        conn.Open();
+        using (var cmd = new SqlCommand("kullaniciBilgiGuncelle", conn))
         {
-            conn.Open();
-            using (var cmd = new SqlCommand("kullaniciBilgiGuncelle", conn))
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add(new SqlParameter
-                {
-                    ParameterName = "@KullaniciID",
-                    SqlDbType = SqlDbType.UniqueIdentifier,
-                    Value = user.Id
-                });
-                cmd.Parameters.Add(new SqlParameter
-                {
-                    ParameterName = "@KullaniciIsim",
-                    SqlDbType = SqlDbType.NVarChar,
-                    Value = user.Name
-                });
-                cmd.Parameters.Add(new SqlParameter
-                {
-                    ParameterName = "@KullaniciSoyisim",
-                    SqlDbType = SqlDbType.NVarChar,
-                    Value = user.Surname
-                });
-                cmd.Parameters.Add(new SqlParameter
-                {
-                    ParameterName = "@KullaniciTelefon",
-                    SqlDbType = SqlDbType.NVarChar,
-                    Value = user.Phone
-                });
+                ParameterName = "@KullaniciID",
+                SqlDbType = SqlDbType.UniqueIdentifier,
+                Value = user.Id
+            });
+            cmd.Parameters.Add(new SqlParameter
+            {
+                ParameterName = "@KullaniciIsim",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = string.IsNullOrEmpty(user.Name) ? DBNull.Value : user.Name
+            });
+            cmd.Parameters.Add(new SqlParameter
+            {
+                ParameterName = "@KullaniciSoyisim",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = string.IsNullOrEmpty(user.Surname) ? DBNull.Value : user.Surname
+            });
+            cmd.Parameters.Add(new SqlParameter
+            {
+                ParameterName = "@KullaniciTelefon",
+                SqlDbType = SqlDbType.NVarChar,
+                Value = string.IsNullOrEmpty(user.Phone) ? DBNull.Value : user.Phone
+            });
 
-                using (var reader = cmd.ExecuteReader())
+            using (var reader = cmd.ExecuteReader())
+            {
+                if (reader.Read()) // sadece tek satır okuyacağı için
                 {
-                    if (reader.Read()) //sadece tek satır okuyacağı için
+                    return new User
                     {
-                        updateuser= new User
-                        {
-                            Id = (Guid)reader["id"],
-                            Name = reader["isim"].ToString(),
-                            Surname = reader["soyisim"].ToString(),
-                            Email = reader["email"].ToString(),
-                            Password = reader["sifre"].ToString(),
-                            Phone = reader["telefon"].ToString(),
-                            CreateTime = Convert.ToDateTime(reader["kayit_tarihi"]),
-                            Role =reader["rol"].ToString(),
-                        };
-                    }
-                    return updateuser;
+                        Id = (Guid)reader["id"],
+                        Name = reader["isim"].ToString(),
+                        Surname = reader["soyisim"].ToString(),
+                        Email = reader["email"].ToString(),
+                        Password = reader["sifre"].ToString(),
+                        Phone = reader["telefon"] != DBNull.Value ? reader["telefon"].ToString() : null,
+                        CreateTime = Convert.ToDateTime(reader["kayit_tarihi"]),
+                        Role = reader["rol"] != DBNull.Value ? reader["rol"].ToString() : null
+                    };
                 }
             }
         }
     }
+    return null;
+}
+    
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Imdb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe10150d259fc60ca94707cef8081a6b5dd66f63")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6f57190d3b947a3425f93d8d7e8c5525029d2bf")]
 [assembly: System.Reflection.AssemblyProductAttribute("Imdb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Imdb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
