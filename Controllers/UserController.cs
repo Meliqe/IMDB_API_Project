@@ -94,7 +94,8 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
             return StatusCode(500,"kullanıcı bilgileri gelmedi!!");
         }
     }
-
+    
+    [Authorize(Roles = "user")]
     [HttpPatch("updateuser")]
     public IActionResult UpdateUserInfo([FromBody] User user)
     {
