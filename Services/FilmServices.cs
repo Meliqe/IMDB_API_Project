@@ -129,12 +129,11 @@ public class FilmServices
         }
     }
 
-    public FilmScoreDto GetFilmScoreByFilmId(Guid filmId)
+    public void AddFilmToList(FilmListRequestDto filmListRequestDto)
     {
         try
         {
-            var filmScoreDto = _filmRepository.GetFilmScoreByFilmId(filmId);
-            return filmScoreDto;
+             _filmRepository.AddFilmToList(filmListRequestDto);
         }
         catch (Exception e)
         {
@@ -142,5 +141,18 @@ public class FilmServices
             throw;
         }
     }
-    
+
+    public string RemoveFilmFromList(FilmListRequestDto filmListRequestDto)
+    {
+        try
+        {
+            var message= _filmRepository.RemoveFilmFromList(filmListRequestDto);
+            return message;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

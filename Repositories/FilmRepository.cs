@@ -347,41 +347,69 @@ namespace Imdb.Repositories
             }
             return comments; 
         }
-        
-        public FilmScoreDto GetFilmScoreByFilmId(Guid filmId)
-        {
-            FilmScoreDto filmScoreDto = null; // Varsayılan olarak null atanıyor.
 
+        public void AddFilmToList(FilmListRequestDto filmListRequestDto)
+        {
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                using (var cmd = new SqlCommand("getScore", conn))
+                using (var cmd=new SqlCommand("FilmEkle",conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter
                     {
-                        ParameterName = "@FilmId",
+                        ParameterName = "@kullanici_id",
                         SqlDbType = SqlDbType.UniqueIdentifier,
-                        Value = filmId
+                        Value = filmListRequestDto.UserId
                     });
-
-                    using (var reader = cmd.ExecuteReader())
+                    cmd.Parameters.Add(new SqlParameter
                     {
-                        if (reader.Read()) // Eğer sonuç varsa
-                        {
-                            filmScoreDto = new FilmScoreDto
-                            {
-                                FilmId = (Guid)reader["film_id"], 
-                                Score = reader["score"] != DBNull.Value
-                                    ? Convert.ToSingle(reader["score"]) // Eğer NULL değilse float'a çevir.
-                                    : 0f // NULL ise varsayılan olarak 0 atanır.
-                            };
-                        }
+                        ParameterName = "@film_id",
+                        SqlDbType = SqlDbType.UniqueIdentifier,
+                        Value = filmListRequestDto.FilmId
+                    });
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine("film listeye eklendi");
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Film listeye eklenirken hata: " + ex.Message);
                     }
                 }
             }
-            return filmScoreDto; // Sonuç dönmezse null döner.
         }
         
+        public string RemoveFilmFromList(FilmListRequestDto filmListRequestDto)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("FilmSil", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@kullanici_id", filmListRequestDto.UserId);
+                    cmd.Parameters.AddWithValue("@film_id", filmListRequestDto.FilmId);
+
+                    try
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return reader["Message"].ToString(); // Dönen mesaj
+                            }
+                        }
+                        return "Film listeden silinemedi. Beklenmeyen bir hata oluştu.";
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Film silme işlemi sırasında hata: " + ex.Message);
+                    }
+                }
+            }
+        }
+
     }
 }

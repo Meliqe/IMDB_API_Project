@@ -1,4 +1,5 @@
-﻿using Imdb.Models;
+﻿using Imdb.Dtos;
+using Imdb.Models;
 using Imdb.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -147,18 +148,35 @@ public class FilmController:ControllerBase
             return StatusCode(500,"filme gelen yorumları görüntülerken hata!!");
         }
     }
-    
-    [HttpGet("filmscore/{filmid}")]
-    public IActionResult GetFilmScoreByFilmId(Guid filmid)
+
+    [HttpPost("addfilmtolist")]
+    public IActionResult AddFilmToList([FromBody] FilmListRequestDto filmListRequestDto)
     {
         try
         {
-            var filmScoreDto = _filmService.GetFilmScoreByFilmId(filmid);
-            return Ok(filmScoreDto);
+            _filmService.AddFilmToList(filmListRequestDto);
+            return Ok();
         }
         catch (Exception e)
         {
-            return StatusCode(500, "ilgili filme ait puan gelemedi!!");
+            Console.WriteLine(e);
+            return StatusCode(500,"film listeye eklenemedi");
         }
     }
+    
+    [HttpDelete("removefilmfromlist")]
+    public IActionResult RemoveFilmFromList([FromBody] FilmListRequestDto removeFilmRequest)
+    {
+        try
+        {
+            var message = _filmService.RemoveFilmFromList(removeFilmRequest);
+            return Ok(new { message });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, new { message = "Film listeden silinemedi. Lütfen tekrar deneyin." });
+        }
+    }
+
 }
