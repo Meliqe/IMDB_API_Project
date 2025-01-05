@@ -147,4 +147,18 @@ public class FilmController:ControllerBase
             return StatusCode(500,"filme gelen yorumları görüntülerken hata!!");
         }
     }
+    
+    [HttpGet("filmscore/{filmid}")]
+    public IActionResult GetFilmScoreByFilmId(Guid filmid)
+    {
+        try
+        {
+            var filmScoreDto = _filmService.GetFilmScoreByFilmId(filmid);
+            return Ok(filmScoreDto);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, "ilgili filme ait puan gelemedi!!");
+        }
+    }
 }

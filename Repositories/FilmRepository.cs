@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
+using Imdb.Dtos;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Imdb.Repositories
@@ -48,6 +49,9 @@ namespace Imdb.Repositories
                                         }).ToList(),
                                     FilmReleaseDate = Convert.ToDateTime(reader["yayinlanma_tarihi"]),
                                     FilmDuration = Convert.ToInt32(reader["film_suresi"]),
+                                    RateAvg = reader["score"]!= DBNull.Value
+                                        ? Convert.ToSingle(reader["score"]) 
+                                        : 0f,
                                     PosterPath = reader["poster_url"] as byte[] != null 
                                         ? Convert.ToBase64String((byte[])reader["poster_url"]) 
                                         : null
@@ -343,5 +347,41 @@ namespace Imdb.Repositories
             }
             return comments; 
         }
+        
+        public FilmScoreDto GetFilmScoreByFilmId(Guid filmId)
+        {
+            FilmScoreDto filmScoreDto = null; // Varsayılan olarak null atanıyor.
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand("getScore", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter
+                    {
+                        ParameterName = "@FilmId",
+                        SqlDbType = SqlDbType.UniqueIdentifier,
+                        Value = filmId
+                    });
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read()) // Eğer sonuç varsa
+                        {
+                            filmScoreDto = new FilmScoreDto
+                            {
+                                FilmId = (Guid)reader["film_id"], 
+                                Score = reader["score"] != DBNull.Value
+                                    ? Convert.ToSingle(reader["score"]) // Eğer NULL değilse float'a çevir.
+                                    : 0f // NULL ise varsayılan olarak 0 atanır.
+                            };
+                        }
+                    }
+                }
+            }
+            return filmScoreDto; // Sonuç dönmezse null döner.
+        }
+        
     }
 }

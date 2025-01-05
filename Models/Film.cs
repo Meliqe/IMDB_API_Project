@@ -10,4 +10,6 @@ public class Film
     public string? PosterPath { get; set; }
     public List<Genre>? Genres { get; set; }
     public List<Actor>? Actors { get; set; }
+    
+    public float? RateAvg { get; set; }
 }

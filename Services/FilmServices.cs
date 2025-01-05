@@ -1,4 +1,5 @@
-﻿using Imdb.Models;
+﻿using Imdb.Dtos;
+using Imdb.Models;
 using Imdb.Repositories;
 
 namespace Imdb.Services;
@@ -124,6 +125,20 @@ public class FilmServices
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            throw;
+        }
+    }
+
+    public FilmScoreDto GetFilmScoreByFilmId(Guid filmId)
+    {
+        try
+        {
+            var filmScoreDto = _filmRepository.GetFilmScoreByFilmId(filmId);
+            return filmScoreDto;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
             throw;
         }
     }
