@@ -149,6 +149,7 @@ public class FilmController:ControllerBase
         }
     }
 
+    [Authorize(Roles = "user")]
     [HttpPost("addfilmtolist")]
     public IActionResult AddFilmToList([FromBody] FilmListRequestDto filmListRequestDto)
     {
@@ -164,6 +165,7 @@ public class FilmController:ControllerBase
         }
     }
     
+    [Authorize(Roles = "user")]
     [HttpDelete("removefilmfromlist")]
     public IActionResult RemoveFilmFromList([FromBody] FilmListRequestDto removeFilmRequest)
     {
