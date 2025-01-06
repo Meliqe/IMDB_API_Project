@@ -293,4 +293,40 @@ public class UserRepository
             }
         }
     }
+
+    public List<Film> UserList(Guid userId)
+    {
+        List<Film> userlist = new List<Film>();
+        using (var conn= new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd= new SqlCommand("GetUserWatchlist",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@kullanici_id",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = userId
+                });
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var film = new Film
+                        {
+                            FilmId = (Guid)reader["film_id"],
+                            FilmName = reader["film_adi"].ToString(),
+                            PosterPath = reader["poster_url"] as byte[] != null
+                                ? Convert.ToBase64String((byte[])reader["poster_url"])
+                                : null
+                        };
+                        userlist.Add(film);
+                    }
+                    return userlist;
+                }
+            }
+        }
+    }
 }

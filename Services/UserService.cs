@@ -109,4 +109,18 @@ public class UserService
             throw;
         }
     }
+
+    public List<Film> UserList(Guid userId)
+    {
+        try
+        {
+            var  list=_userRepository.UserList(userId);
+            return list;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

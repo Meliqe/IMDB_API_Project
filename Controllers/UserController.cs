@@ -159,4 +159,19 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
             return StatusCode(500, "Oy verilemedi!!");
         }
     }
+
+    [HttpGet("userlist/{id}")]
+    public IActionResult Userlist(Guid id)
+    {
+        try
+        {
+            var list=_userService.UserList(id);
+            return Ok(list);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Kullanıcının listesi gelemedi");
+        }
+    }
 }
