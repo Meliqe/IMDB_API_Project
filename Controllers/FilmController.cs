@@ -125,8 +125,8 @@ public class FilmController:ControllerBase
         }
         try
         {
-            _filmService.AddComment(comment);
-            return Ok();
+            var cmt= _filmService.AddComment(comment);
+            return Ok(cmt);
         }
         catch (Exception e)
         {

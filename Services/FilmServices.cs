@@ -100,12 +100,12 @@ public class FilmServices
         }
     }
 
-    public void AddComment(Comment comment)
+    public Comment AddComment(Comment comment)
     {
         try
         {
-            _filmRepository.AddComment(comment);
-            Console.WriteLine("yorum başarıyla eklendi");
+            var cmt =_filmRepository.AddComment(comment);
+            return cmt;
         }
         catch (Exception e)
         {

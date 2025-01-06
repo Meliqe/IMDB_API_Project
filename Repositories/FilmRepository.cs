@@ -265,8 +265,9 @@ namespace Imdb.Repositories
             return films;
         }
         
-        public void AddComment(Comment comment)
+        public Comment AddComment(Comment comment)
         {
+            Comment cmt = null;
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
@@ -296,15 +297,20 @@ namespace Imdb.Repositories
                         Value = comment.Content
                     });
 
-                    //procedure çalıştır
-                    try
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.ExecuteNonQuery();
-                        Console.WriteLine("yorum eklendi");
-                    }
-                    catch (SqlException ex)
-                    {
-                        throw new Exception("Yorum eklenirken bir hata oluştu: " + ex.Message);
+                        if (reader.Read())
+                        {
+                            cmt = new Comment
+                            {
+                                CommentId = (Guid)reader["yorum_id"],
+                                Content = reader["yorum"].ToString(),
+                                PublishedDate = Convert.ToDateTime(reader["yorum_yayinlanma_tarihi"]),
+                                UserId = (Guid)reader["userid"],
+                                FilmId = (Guid)reader["film_id"],
+                            };
+                        }
+                        return cmt;
                     }
                 }
             }
