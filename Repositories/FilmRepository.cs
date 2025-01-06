@@ -381,7 +381,7 @@ namespace Imdb.Repositories
             }
         }
         
-        public string RemoveFilmFromList(FilmListRequestDto filmListRequestDto)
+        public void RemoveFilmFromList(FilmListRequestDto filmListRequestDto)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -394,18 +394,12 @@ namespace Imdb.Repositories
 
                     try
                     {
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                return reader["Message"].ToString(); // Dönen mesaj
-                            }
-                        }
-                        return "Film listeden silinemedi. Beklenmeyen bir hata oluştu.";
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine("film listeden kaldırıldı");
                     }
                     catch (SqlException ex)
                     {
-                        throw new Exception("Film silme işlemi sırasında hata: " + ex.Message);
+                        throw new Exception("Film listeden kaldırılamadı: " + ex.Message);
                     }
                 }
             }

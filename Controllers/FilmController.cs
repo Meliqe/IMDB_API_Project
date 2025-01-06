@@ -169,13 +169,13 @@ public class FilmController:ControllerBase
     {
         try
         {
-            var message = _filmService.RemoveFilmFromList(removeFilmRequest);
-            return Ok(new { message });
+            _filmService.RemoveFilmFromList(removeFilmRequest);
+            return Ok();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return StatusCode(500, new { message = "Film listeden silinemedi. Lütfen tekrar deneyin." });
+            return StatusCode(500,"Film listeden silinemedi. Lütfen tekrar deneyin.");
         }
     }
 

@@ -142,12 +142,11 @@ public class FilmServices
         }
     }
 
-    public string RemoveFilmFromList(FilmListRequestDto filmListRequestDto)
+    public void RemoveFilmFromList(FilmListRequestDto filmListRequestDto)
     {
         try
         {
-            var message= _filmRepository.RemoveFilmFromList(filmListRequestDto);
-            return message;
+            _filmRepository.RemoveFilmFromList(filmListRequestDto);
         }
         catch (Exception e)
         {
