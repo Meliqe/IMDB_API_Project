@@ -80,7 +80,7 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
         }
     }
 
-    [Authorize(Roles = "user")]
+    [Authorize]
     [HttpGet("userdetails/{id}")]
     //routerdaki id string kabul ediliyor
     public IActionResult GetUserDetails(Guid id)

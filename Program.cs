@@ -29,6 +29,8 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<FilmRepository>();
 builder.Services.AddScoped<FilmServices>();
+builder.Services.AddScoped<AdminServices>();
+builder.Services.AddScoped<AdminRepository>();
 
 //jwt doğrulama mekanizması
 builder.Services.AddAuthentication(options =>
