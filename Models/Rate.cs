@@ -7,4 +7,6 @@ public class Rate
     public DateTime RatingDate { get; set; } 
     public Guid UserId { get; set; } 
     public Guid FilmId { get; set; } 
+    
+    public float RateAvg { get; set; }
 }

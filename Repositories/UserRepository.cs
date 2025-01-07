@@ -286,6 +286,7 @@ public class UserRepository
                             RatingDate = Convert.ToDateTime(reader["puanlama_tarihi"]),
                             UserId = (Guid)reader["userid"],
                             FilmId = (Guid)reader["film_id"],
+                            RateAvg = reader["OrtalamaPuan"] != DBNull.Value ? Convert.ToSingle(reader["OrtalamaPuan"]) : 0.0f
                         };
                     }
                     return rate;

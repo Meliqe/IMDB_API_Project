@@ -145,7 +145,6 @@ public class UserController:ControllerBase //Basecontroller diye kendi sınıfı
         }
     }
 
-    [Authorize(Roles = "user")]
     [HttpPut("addorupdaterate")]
     public IActionResult AddOrUpdateRate([FromBody] RateRequestDto rateRequestDto)
     {
