@@ -1,4 +1,5 @@
-﻿using Imdb.Models;
+﻿using Imdb.Dtos;
+using Imdb.Models;
 using Imdb.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,21 @@ public class AdminController:ControllerBase
         {
             Console.WriteLine(e);
             return StatusCode(500, "film silinemedi");
+        }
+    }
+
+    [HttpPost("addactor")]
+    public IActionResult AddActor([FromBody] AdminAddActorRequestDto adminAddActorRequestDto)
+    {
+        try
+        {
+            var actor = _adminServices.AddActor(adminAddActorRequestDto);
+            return Ok(actor);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Oyuncu eklenemedi");
         }
     }
 }

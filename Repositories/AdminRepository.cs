@@ -121,5 +121,64 @@ public class AdminRepository
             }
         }
     }
-    
+
+    public Actor AddActor(AdminAddActorRequestDto adminAddActorRequestDto)
+    {
+        Actor actor = null;
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("AdminFilmeOyuncuEkle",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@film_id",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = adminAddActorRequestDto.FilmId
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_adi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = adminAddActorRequestDto.ActorName
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_fotografi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = adminAddActorRequestDto.PhotoPath
+                });cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_biyografi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = adminAddActorRequestDto.Biography
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_dogum_tarihi",
+                    SqlDbType = SqlDbType.DateTime,
+                    Value = adminAddActorRequestDto.BirthDate
+                });
+
+                using (var reader= cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        actor = new Actor
+                        {
+                            Id = (Guid)reader["oyuncu_id"],
+                            ActorName = (string)reader["oyuncu_adi"],
+                            Biography = reader["oyuncu_biyografi"].ToString(),
+                            BirthDate = Convert.ToDateTime(reader["oyuncu_dogum_tarihi"]),
+                            PhotoPath = reader["oyuncu_fotografi"] as byte[] != null 
+                                ? Convert.ToBase64String((byte[])reader["poster_url"]) 
+                                : null
+                        };
+                    }
+                    return actor;
+                }
+            }
+        }
+    }
 }

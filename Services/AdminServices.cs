@@ -1,4 +1,5 @@
-﻿using Imdb.Models;
+﻿using Imdb.Dtos;
+using Imdb.Models;
 using Imdb.Repositories;
 
 namespace Imdb.Services;
@@ -44,4 +45,22 @@ public class AdminServices
             throw;
         }
     }
+
+    public Actor AddActor(AdminAddActorRequestDto adminAddActorRequestDto)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(adminAddActorRequestDto.PhotoPath) && adminAddActorRequestDto.PhotoPath.StartsWith("data:image"))
+            {
+                adminAddActorRequestDto.PhotoPath = adminAddActorRequestDto.PhotoPath.Substring(adminAddActorRequestDto.PhotoPath.IndexOf(",") + 1); 
+            }
+            var actor = _adminRepository.AddActor(adminAddActorRequestDto);
+            return actor;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    } 
 }
