@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Imdb.Dtos;
 using Imdb.Models;
 using Microsoft.Data.SqlClient;
 
@@ -86,4 +87,39 @@ public class AdminRepository
             }
         }
     }
+
+    public void DeleteFilm(Guid filmId)
+    {
+        using (var conn= new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd= new SqlCommand("AdminFilmSil",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@FilmID",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = filmId
+                });
+                try
+                {
+                    // ExecuteNonQuery dönen etkilenen satır sayısını kontrol ediyoruz
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected == 0)
+                    {
+                        // Hiçbir satır etkilenmediyse hata fırlat
+                        throw new Exception("Silinmek istenen film bulunamadı.");
+                    }
+
+                    Console.WriteLine("film silindi");
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Film silinirken hata: " + ex.Message);
+                }
+            }
+        }
+    }
+    
 }

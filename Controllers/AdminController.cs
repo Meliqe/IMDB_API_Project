@@ -28,4 +28,19 @@ public class AdminController:ControllerBase
             return StatusCode(500, "film eklenemedi");
         }
     }
+
+    [HttpDelete("deletefilm/{id}")]
+    public IActionResult DeleteFilm(Guid id)
+    {
+        try
+        {
+            _adminServices.DeleteFilm(id);
+            return Ok(new { message = "film silindi" });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "film silinemedi");
+        }
+    }
 }

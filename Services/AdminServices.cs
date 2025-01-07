@@ -31,4 +31,17 @@ public class AdminServices
             throw;
         }
     }
+
+    public void DeleteFilm(Guid filmId)
+    {
+        try
+        {
+            _adminRepository.DeleteFilm(filmId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
