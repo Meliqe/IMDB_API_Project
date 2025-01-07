@@ -153,6 +153,7 @@ namespace Imdb.Repositories
                                 PosterPath = reader["poster_url"] as byte[] != null
                                 ? Convert.ToBase64String((byte[])reader["poster_url"])
                                 :null,
+                                RateAvg = reader["OrtalamaPuan"] != DBNull.Value ? Convert.ToSingle(reader["OrtalamaPuan"]) : 0.0f
                             };
                         }
 
