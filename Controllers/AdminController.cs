@@ -91,5 +91,21 @@ public class AdminController:ControllerBase
             return StatusCode(500, "Film bilgileri güncellenemedi");
         }
     }
+
+    [HttpPut("updateactorbyid/{id}")]
+    public IActionResult UpdateActorById(Guid id, [FromBody] Actor actor)
+    {
+        try
+        {
+            actor.Id = id;
+            var actorUpdated = _adminServices.UpdateActorById(actor);
+            return Ok(actorUpdated);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Oyuncu bilgisi güncellenemedi");
+        }
+    }
     
 }

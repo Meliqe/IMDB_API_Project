@@ -329,5 +329,65 @@ public class AdminRepository
             }
         }
     }
-    
+
+    public Actor UpdateActorById(Actor actor)
+    {
+        Actor actorUpdated = null;
+        using (var conn= new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("AdminUpdateActor",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_id",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = actor.Id
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_adi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = actor.ActorName
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_biyografi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = actor.Biography
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_dogum_tarihi",
+                    SqlDbType = SqlDbType.DateTime,
+                    Value = actor.BirthDate
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@oyuncu_fotografi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = actor.PhotoPath
+                });
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        actorUpdated = new Actor
+                        {
+                            Id = (Guid)reader["oyuncu_id"],
+                            ActorName = reader["oyuncu_adi"].ToString(),
+                            Biography = reader["oyuncu_biyografi"].ToString(),
+                            BirthDate = Convert.ToDateTime(reader["oyuncu_dogum_tarihi"]),
+                            PhotoPath = reader["oyuncu_fotografi"] as byte[] != null 
+                                ? Convert.ToBase64String((byte[])reader["oyuncu_fotografi"]) 
+                                : null,
+                        };
+                    }
+                    return actorUpdated;
+                }
+            }
+        }
+    }
 }

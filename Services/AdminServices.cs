@@ -95,4 +95,22 @@ public class AdminServices
             throw;
         }
     }
+
+    public Actor UpdateActorById(Actor actor)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(actor.PhotoPath) && actor.PhotoPath.StartsWith("data:image"))
+            {
+                actor.PhotoPath = actor.PhotoPath.Substring(actor.PhotoPath.IndexOf(",") + 1); 
+            }
+            var actorUpdated = _adminRepository.UpdateActorById(actor);
+            return actorUpdated;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
