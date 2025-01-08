@@ -172,11 +172,75 @@ public class AdminRepository
                             Biography = reader["oyuncu_biyografi"].ToString(),
                             BirthDate = Convert.ToDateTime(reader["oyuncu_dogum_tarihi"]),
                             PhotoPath = reader["oyuncu_fotografi"] as byte[] != null 
-                                ? Convert.ToBase64String((byte[])reader["poster_url"]) 
+                                ? Convert.ToBase64String((byte[])reader["oyuncu_fotografi"]) 
                                 : null
                         };
                     }
                     return actor;
+                }
+            }
+        }
+    }
+
+    public Film GetFilmById(Guid filmId)
+    {
+        Film film = null;
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("AdminGetFilmById",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@FilmID",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = filmId
+                });
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        film = new Film
+                        {
+                            FilmId = (Guid)reader["film_id"],
+                            FilmName = reader["film_adi"].ToString(),
+                            FilmDescription = reader["film_aciklamasi"].ToString(),
+                            FilmReleaseDate = Convert.ToDateTime(reader["yayinlanma_tarihi"]),
+                            FilmDuration = Convert.ToInt32(reader["film_suresi"]),
+                            PosterPath = reader["poster_url"] as byte[] != null 
+                                ? Convert.ToBase64String((byte[])reader["poster_url"]) 
+                                : null,
+                            Actors = new List<Actor>(), // Listeler başlatılıyor
+                            Genres = new List<Genre>()
+                        };
+                    }
+                    
+                    if (reader.NextResult())
+                    {
+                        while (reader.Read())
+                        {
+                            film.Actors.Add(new Actor
+                            {
+                                Id = (Guid)reader["oyuncu_id"],
+                                ActorName = reader["oyuncu_adi"].ToString(),
+                                PhotoPath = reader["oyuncu_fotografi"] as byte[] != null 
+                                    ? Convert.ToBase64String((byte[])reader["oyuncu_fotografi"]) 
+                                    : null,
+                            });
+                        } 
+                    }
+                    
+                    if (reader.NextResult())
+                    {
+                        while (reader.Read())
+                        {
+                            film.Genres.Add(new Genre { GenreName = reader["tur_adi"].ToString() });
+                        }
+                        
+                    }
+                    return film;
                 }
             }
         }

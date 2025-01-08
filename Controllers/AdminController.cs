@@ -1,6 +1,7 @@
 ﻿using Imdb.Dtos;
 using Imdb.Models;
 using Imdb.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Imdb.Controller;
@@ -57,6 +58,21 @@ public class AdminController:ControllerBase
         {
             Console.WriteLine(e);
             return StatusCode(500, "Oyuncu eklenemedi");
+        }
+    }
+
+    [HttpGet("admingetfilmbyid/{id}")]
+    public IActionResult GetAdmingetFilmbyid(Guid id)
+    {
+        try
+        {
+            var film = _adminServices.GetFilmById(id);
+            return Ok(film);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "İlgili filmin detayları gelemedi");
         }
     }
 }

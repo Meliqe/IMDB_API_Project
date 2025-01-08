@@ -62,5 +62,19 @@ public class AdminServices
             Console.WriteLine(e);
             throw;
         }
-    } 
+    }
+
+    public Film GetFilmById(Guid filmId)
+    {
+        try
+        {
+            var film = _adminRepository.GetFilmById(filmId);
+            return film;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
