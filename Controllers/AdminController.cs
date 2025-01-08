@@ -75,4 +75,21 @@ public class AdminController:ControllerBase
             return StatusCode(500, "İlgili filmin detayları gelemedi");
         }
     }
+
+    [HttpPut("updatefilmbyid/{id}")]
+    public IActionResult UpdateFilmById(Guid id,[FromBody] Film film)
+    {
+        try
+        {
+            film.FilmId = id;
+            var filmUpdated = _adminServices.UpdateFilmById(film);
+            return Ok(filmUpdated);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Film bilgileri güncellenemedi");
+        }
+    }
+    
 }

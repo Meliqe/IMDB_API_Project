@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Runtime.InteropServices.JavaScript;
 using Imdb.Dtos;
 using Imdb.Models;
 using Microsoft.Data.SqlClient;
@@ -245,4 +246,88 @@ public class AdminRepository
             }
         }
     }
+
+    public Film UpdateFilmById(Film film)
+    {
+        Film filmUpdated = null;
+        using (var conn= new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("AdminFilmGuncelle",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@film_id",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = film.FilmId
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@film_adi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = film.FilmName
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@film_aciklamasi",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = film.FilmDescription
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@yayinlanma_tarihi",
+                    SqlDbType = SqlDbType.DateTime,
+                    Value = film.FilmReleaseDate
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@film_suresi",
+                    SqlDbType = SqlDbType.Int,
+                    Value =film.FilmDuration
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@poster_url_base64",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Value = film.PosterPath
+                });
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@turler",
+                    SqlDbType = SqlDbType.NVarChar,
+                    //film.Genres, muhtemelen bir liste (List<Genre>) olduğundan, doğrudan SQL Server'a gönderilemez.
+                    Value = film.Genres != null && film.Genres.Any()
+                        ? string.Join(",", film.Genres.Select(g => g.GenreName))
+                        : DBNull.Value
+                });
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        filmUpdated = new Film
+                        {
+                            FilmId = (Guid)reader["film_id"],
+                            FilmName = reader["film_adi"].ToString(),
+                            FilmDescription = reader["film_aciklamasi"].ToString(),
+                            FilmReleaseDate = Convert.ToDateTime(reader["yayinlanma_tarihi"]),
+                            FilmDuration = Convert.ToInt32(reader["film_suresi"]),
+                            PosterPath = reader["poster_url"] as byte[] != null 
+                                ? Convert.ToBase64String((byte[])reader["poster_url"]) 
+                                : null,
+                            Genres = reader["turler"] != DBNull.Value 
+                                ? reader["turler"].ToString()
+                                    .Split(',')
+                                    .Select(g => new Genre { GenreName = g.Trim() }) 
+                                    .ToList()
+                                : new List<Genre>()
+                        };
+                    }
+                    return filmUpdated;
+                }
+            }
+        }
+    }
+    
 }

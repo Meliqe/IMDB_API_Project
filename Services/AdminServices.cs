@@ -77,4 +77,22 @@ public class AdminServices
             throw;
         }
     }
+
+    public Film UpdateFilmById(Film film)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(film.PosterPath) && film.PosterPath.StartsWith("data:image"))
+            {
+                film.PosterPath = film.PosterPath.Substring(film.PosterPath.IndexOf(",") + 1); 
+            }
+            var filmUpdated = _adminRepository.UpdateFilmById(film);
+            return filmUpdated;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
