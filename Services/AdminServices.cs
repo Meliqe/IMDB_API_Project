@@ -113,4 +113,18 @@ public class AdminServices
             throw;
         }
     }
+
+    public void DeleteActor(Guid actorId)
+    {
+        try
+        {
+            _adminRepository.DeleteActor(actorId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
 }

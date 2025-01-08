@@ -107,5 +107,20 @@ public class AdminController:ControllerBase
             return StatusCode(500, "Oyuncu bilgisi güncellenemedi");
         }
     }
+
+    [HttpDelete("deleteactorbyid/{id}")]
+    public IActionResult DeleteActorById(Guid id)
+    {
+        try
+        {
+            _adminServices.DeleteActor(id);
+            return Ok(new { message = "Oyuncu silindi" });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Oyuncu silinemedi");
+        }
+    }
     
 }

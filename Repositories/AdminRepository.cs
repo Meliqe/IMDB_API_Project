@@ -13,7 +13,6 @@ public class AdminRepository
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
-
     public Film AddFilm(Film film)
     {
         Film f = null;
@@ -88,7 +87,6 @@ public class AdminRepository
             }
         }
     }
-
     public void DeleteFilm(Guid filmId)
     {
         using (var conn= new SqlConnection(_connectionString))
@@ -122,7 +120,6 @@ public class AdminRepository
             }
         }
     }
-
     public Actor AddActor(AdminAddActorRequestDto adminAddActorRequestDto)
     {
         Actor actor = null;
@@ -182,7 +179,6 @@ public class AdminRepository
             }
         }
     }
-
     public Film GetFilmById(Guid filmId)
     {
         Film film = null;
@@ -246,7 +242,6 @@ public class AdminRepository
             }
         }
     }
-
     public Film UpdateFilmById(Film film)
     {
         Film filmUpdated = null;
@@ -329,7 +324,6 @@ public class AdminRepository
             }
         }
     }
-
     public Actor UpdateActorById(Actor actor)
     {
         Actor actorUpdated = null;
@@ -386,6 +380,39 @@ public class AdminRepository
                         };
                     }
                     return actorUpdated;
+                }
+            }
+        }
+    }
+
+    public void DeleteActor(Guid actorId)
+    {
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            conn.Open();
+            using (var cmd = new SqlCommand("AdminOyuncuSil",conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@ActorId",
+                    SqlDbType = SqlDbType.UniqueIdentifier,
+                    Value = actorId
+                });
+
+                try
+                {
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected == 0)
+                    {
+                        throw new Exception("Silinmek istenen oyuncu bulunamadı.");
+                    }
+
+                    Console.WriteLine("oyuncu silindi");
+                }
+                catch (SqlException e)
+                {
+                    throw new Exception("Oyuncu silinirken hata: " + e.Message);
                 }
             }
         }
